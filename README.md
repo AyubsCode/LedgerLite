@@ -21,7 +21,8 @@
   - Clean, table-like display  
 
 - **Search Expenses**  
-  - Filter by category or keyword in the description  
+  - Filter by category
+  - Display the dates(starting with most recent), descriptions and amounts of that category  
 
 - **Monthly Summary**  
   - Total spent per category for the current month  
@@ -35,6 +36,35 @@
   - Loads data automatically on startup  
 
 ---
+### Example Usage: Adding an Expense and Monthly Summary
+```ps
+=== LedgerLite ===
+1. Add Expense
+2. View All Expenses
+3. Search Expenses
+4. Delete Expense
+5. Monthly Summary
+6. Exit
+Choose: 1
+
+Enter date (yyyy-mm-dd) or leave blank for today: 
+Enter description: Energy drink
+Enter category [Food/Transport/Entertainment/Bills/Other]: Food
+Enter amount: 4.75
+[✓] Expense added successfully!
+
+...
+Choose: 5
+
+=== Monthly Summary ===
+Food: $35.20
+Transport: $50.00
+Entertainment: $12.00
+Total: $97.20
+```
 
 ## Stretch Goals
-- Allow the user to view by individual months for the category chosen
+- **Updated Search Expenses Function**:
+  - Enable users to filter expenses by category over a selectable range of months, and display the total amount spent within that category and timeframe.
+- **Budget Alerts**:
+  - Enable users to set monthly spending limits per category and display warnings in the console when limits are exceeded.
