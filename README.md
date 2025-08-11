@@ -1,6 +1,6 @@
 # LedgerLite  
 A Kotlin-based personal expense tracker for the console, designed to help you monitor your spending, categorize expenses, and keep track of monthly summaries.  
-
+![Expense Tracker] (LedgeLite/Expense-Tracker/img/Ledger.JPG)
 ---
 
 ## Features  
@@ -22,7 +22,7 @@ A Kotlin-based personal expense tracker for the console, designed to help you mo
   - Total spent per category for the current month  
   - Overall total spent  
 
-- **Delete Expense**  
+- **Delete Expense** *(optional)*  
   - Remove an expense by selecting its index from the list  
 
 - **Persistent Storage**  
