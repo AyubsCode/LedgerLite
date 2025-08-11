@@ -22,7 +22,7 @@ A Kotlin-based personal expense tracker for the console, designed to help you mo
   - Total spent per category for the current month  
   - Overall total spent  
 
-- **Delete Expense** *(optional)*  
+- **Delete Expense**  
   - Remove an expense by selecting its index from the list  
 
 - **Persistent Storage**  
@@ -30,3 +30,6 @@ A Kotlin-based personal expense tracker for the console, designed to help you mo
   - Loads data automatically on startup  
 
 ---
+
+## Stretch Goals
+- Allow the user to view by individual months for the category chosen
