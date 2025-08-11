@@ -27,7 +27,7 @@
   - Total spent per category for the current month  
   - Overall total spent  
 
-- **Delete Expense** *(optional)*  
+- **Delete Expense**  
   - Remove an expense by selecting its index from the list  
 
 - **Persistent Storage**  
