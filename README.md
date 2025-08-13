@@ -56,11 +56,14 @@ Enter amount: 4.75
 ...
 Choose: 5
 
-=== Monthly Summary ===
-Food: $35.20
-Transport: $50.00
-Entertainment: $12.00
-Total: $97.20
+Summary for June 2025
+---------------------------------------
+Other        : $150.00
+Food         : $100.00
+Bills        : $50.00
+Entertainment: $35.00
+---------------------------------------
+Total: $335.00
 ```
 
 ## Stretch Goals
