@@ -1,5 +1,8 @@
 import java.io.File
 import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 import java.util.Scanner
 
 /**
@@ -51,7 +54,7 @@ fun validDate(date: String): Boolean {
 }
 
 fun validCategory(value: String): Boolean {
-    val allowedValues = listOf("Food", "Transport", "Entertainment", "Bills", "Other")
+    val allowedValues = listOf("food", "transport", "entertainment", "bills", "other")
     return value in allowedValues
 }
 
@@ -80,13 +83,13 @@ fun addExpense(){
 
     while(true) {
         print("Enter date (yyyy-mm-dd) or leave blank to use today's date: ")
-        var date = readln()
+        var date = readln().trim()
         print("Enter description: ")
-        val desc = readln()
+        val desc = readln().trim()
         print("Enter category [Food/Transport/Entertainment/Bills/Other]: ")
-        val cat = readln()
+        val cat = readln().trim()
         print("Enter amount: ")
-        val amt = readln()
+        val amt = readln().trim()
 
         if(date.isBlank()){
             val currentDate = LocalDate.now()
@@ -95,56 +98,136 @@ fun addExpense(){
 
         if(desc.isBlank() || cat.isBlank() || amt.isBlank()){
             println("=====\n[!] One or more of the inputs are blank.\n===== ")
+
         }
 
-        if(!(validDate(date) || validCategory(cat))){
+        if(!validDate(date) || !validCategory(cat.lowercase())){
            println("=====\n[!] One or more of the inputs are not valid.\n=====")
-        }
 
+        }
+        val value = amt.toDouble()
+        if (value <= 0.00){
+            println("=====\n[!] Amount value can't be less than or equal to 0.\n=====")
+        }
         val expenses = loadExpenses()
-        expenses.add(Expense(date,desc,cat,amt.toDouble()))
+        expenses.add(Expense(date,desc,cat,value))
         saveExpense(expenses)
         println("[✓] Expense added successfully!")
         break
     }
 }
 
-fun viewExpenses(){
+fun viewExpenses() {
+
+    val expenses = loadExpenses()
+    if (expenses.isEmpty()) {
+        println("=======\nYou don't have any expenses yet. Create one to see it listed here.\n=======")
+        return
+    }
+    println("\n----------------------------------------------------------")
+    println(String.format("%-12s |  %-15s | %-15s|%8s", "Date", "Description", "Category", "Amount"))
+    println("----------------------------------------------------------")
+
+    expenses.sortBy { it.date }
+    expenses.forEach {
+        println(
+            String.format(
+                "%-12s   %-15s    %-15s   $%5.2f",
+                it.date,
+                it.desc,
+                it.category,
+                it.amount
+            )
+        )
+    }
+}
+
+fun deleteExpenses() {
 
     val expenses = loadExpenses()
     if(expenses.isEmpty()){
         println("=======\nYou don't have any expenses yet. Create one to see it listed here.\n=======")
         return
     }
-    println("\n--------------\n  Date  |  Description  |  Category  |  Amount")
-    expenses.sortBy{it.date}
-    expenses.forEach{ println("${it.date}     ${it.desc}     ${it.category}     $${it.amount}")
+
+    expenses.sortBy { it.date }
+    expenses.mapIndexed { index, expense ->
+        "${index+1}. ${expense.date} | ${expense.desc} | ${expense.category} | $${expense.amount}"
+    }.forEach { println(it) }
+
+    print("Enter the index of the expense you want to remove: ")
+    val index = readln().toIntOrNull()
+    if (index == null || index !in expenses.indices) {
+        println("[!]Invalid index.")
+        return
     }
+    val chosenExpense = expenses.removeAt(index+1)
+    println("Removed: ${chosenExpense.date} | ${chosenExpense.desc} | ${chosenExpense.category} | $${chosenExpense.amount}")
+
+    saveExpense(expenses)
 }
 
-fun deleteExpenses(){
-
+fun formatMonthYear(yyyyMm: String): String {
+    val ym = YearMonth.parse(yyyyMm)
+    val monthName = ym.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+    return "$monthName ${ym.year}"
 }
 
 fun summary(){
+    var targetMonth: String
+    val expenses = loadExpenses()
+    if(expenses.isEmpty()){
+        println("=======\nYou don't have any expenses yet. Create one to see it listed here.\n=======")
+        return
+    }
+    print("Enter month (yyyy-mm) or press Enter to use current month: ")
+    val input = readln().trim()
+    if(input.isBlank()) {
+        val now = LocalDate.now()
+        targetMonth = "${now.year}-${now.monthValue.toString().padStart(2, '0')}" }
+    else{
+        targetMonth = input
+    }
+    val displayDate = formatMonthYear(targetMonth)
+    val filtered = expenses.filter { it.date.startsWith(targetMonth) }
+    if (filtered.isEmpty()){
+        println("No expenses found for $displayDate")
+        return
+    }
 
+    val total = filtered.sumOf{it.amount}
+    println("\nSummary for $displayDate")
+    println("---------------------------------------")
+    filtered.groupBy { it.category }
+        .mapValues { (_,list) -> list.sumOf { it.amount } }
+        .toList().sortedByDescending { (_,sum) ->sum}
+        .forEach { (category, sum) -> println("%-13s: $%3.2f".format(category,sum))
+        }
+    println("---------------------------------------")
+    println("Total: $%.2f".format(total))
 }
-
 fun searchExpenses(){
 
-    print("Enter category to search by: ")
+    print("Enter category to search by [Food/Transport/Entertainment/Bills/Other]: ")
     val category = readln().trim()
 
     if (category.isBlank()){
-        println("\"=====\\n[!] Input was blank, exiting.\\n=====")
+        println("=====\n[!] Input was blank, exiting.\n=====")
+        return
+    }
+
+    if(!validCategory(category.lowercase())){
+        println("=====\n[!] Invalid input.\n=====")
         return
     }
 
     val expenses = loadExpenses().filter {it.category.equals(category,true)}.sortedBy {it.date}
     println("Category: $category (sorted by date)")
+    println(String.format("%-12s|  %-15s| %8s","Date","Description","Amount"))
     expenses.forEach { expense ->
-        println("${expense.date}    |    ${expense.desc}    |    $${expense.amount}")
+        println(String.format("%-14s  %-15s   $%3s",expense.date,expense.desc,expense.amount))
     }
+    print("---------------------------------------------")
 }
 
 

@@ -1,0 +1,9 @@
+2025-08-12,Cheese,Food,6.25
+2025-08-12,Bus,Transport,3.75
+2025-08-12,Filling up gas,Transport,60.0
+2025-08-12,Utility bill,Bills,85.4
+2025-08-12,Movie ticket,Entertainment,16.0
+2025-06-14,Eating out,Food,100.0
+2025-06-20,Archery,Entertainment,35.0
+2025-06-11,Gas bill,Bills,50.0
+2025-06-30,Student loan payment,Other,150.0
